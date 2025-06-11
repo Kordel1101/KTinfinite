@@ -1,0 +1,661 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-83宇宙 | 主线K与主线崔斯特</title>
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Serif+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00A3CC',   // 主色调：深蓝绿色（低饱和度蓝色）
+                        secondary: '#5A4FCF', // 辅助色：深紫色（保持不变，用于对比）
+                        accent: '#4A6FA5',    // 强调色：灰蓝色（替换粉色）
+                        dark: '#10121A',      // 深色背景（更暗）
+                        light: '#E6E8EB',     // 浅色文本（更柔和）
+                        muted: '#8C92A4',     // 次要文本
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        song: ['Noto Serif SC', 'serif'],
+                    },
+                    screens: {
+                        'xs': '360px',
+                        'sm': '640px',
+                        'md': '768px',
+                        'lg': '1024px',
+                        'xl': '1280px',
+                        '2xl': '1536px',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 0 8px rgba(0, 163, 204, 0.5);
+            }
+            .glow {
+                box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); /* 主线K部分改成白色光 */
+            }
+            .glow-blue {
+                box-shadow: 0 0 12px rgba(74, 111, 165, 0.4); /* 主线崔部分改成灰蓝色光 */
+            }
+            .bg-grid {
+                background-image: radial-gradient(rgba(0, 163, 204, 0.05) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .bg-noise {
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+                background-blend-mode: overlay;
+                background-size: 150px;
+            }
+            .text-balance {
+                text-wrap: balance;
+            }
+            .timeline-dot {
+                @apply w-6 h-6 rounded-full border-4 border-dark/80 shadow-lg z-10 flex items-center justify-center;
+            }
+            .timeline-dot-primary {
+                @apply bg-primary;
+            }
+            .timeline-dot-secondary {
+                @apply bg-secondary;
+            }
+            .timeline-dot-accent {
+                @apply bg-accent;
+            }
+            .timeline-content {
+                @apply bg-dark/40 backdrop-blur-sm border border-gray-800 rounded-xl p-5 transform transition-all duration-300 hover:shadow-lg;
+            }
+            .timeline-content-primary {
+                @apply hover:border-primary/40 hover:shadow-primary/10;
+            }
+            .timeline-content-secondary {
+                @apply hover:border-secondary/40 hover:shadow-secondary/10;
+            }
+            .timeline-content-accent {
+                @apply hover:border-accent/40 hover:shadow-accent/10;
+            }
+        }
+    </style>
+    
+    <style>
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(16, 18, 26, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 163, 204, 0.4);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 163, 204, 0.6);
+        }
+        
+        /* 全局动画定义 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-4px, 4px); }
+            40% { transform: translate(-4px, -4px); }
+            60% { transform: translate(4px, 4px); }
+            80% { transform: translate(4px, -4px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* 应用动画 */
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .animate-scan {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .animate-scan::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 163, 204, 0.2), transparent);
+            animation: scan 4s linear infinite;
+        }
+        
+        .animate-glitch {
+            position: relative;
+        }
+        
+        .animate-glitch::before,
+        .animate-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .animate-glitch::before {
+            left: 1px;
+            text-shadow: -1px 0 rgba(74, 111, 165, 0.6); /* 替换粉色为灰蓝色 */
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+            opacity: 0.5;
+        }
+        
+        .animate-glitch::after {
+            left: -1px;
+            text-shadow: -1px 0 rgba(0, 163, 204, 0.6);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim2 3s infinite linear alternate-reverse;
+            opacity: 0.5;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(36px, 9999px, 94px, 0); }
+            20% { clip: rect(79px, 9999px, 107px, 0); }
+            40% { clip: rect(34px, 9999px, 102px, 0); }
+            60% { clip: rect(92px, 9999px, 101px, 0); }
+            80% { clip: rect(28px, 9999px, 85px, 0); }
+            100% { clip: rect(91px, 9999px, 98px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { top: -1px; left: 1px; clip: rect(65px, 9999px, 119px, 0); }
+            20% { top: -6px; left: 4px; clip: rect(79px, 9999px, 19px, 0); }
+            40% { top: -3px; left: 2px; clip: rect(68px, 9999px, 11px, 0); }
+            60% { top: 0px; left: -4px; clip: rect(95px, 9999px, 53px, 0); }
+            80% { top: -2px; left: -1px; clip: rect(31px, 9999px, 149px, 0); }
+            100% { top: -5px; left: -2px; clip: rect(34px, 9999px, 13px, 0); }
+        }
+        
+        /* 导航栏滚动效果 */
+        .navbar-scrolled {
+            background-color: rgba(16, 18, 26, 0.95);
+            backdrop-blur: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 触摸设备优化 */
+        @media (hover: none) {
+            .hover:translate-y-[-5px]:hover {
+                transform: translateY(-3px);
+            }
+            .hover:translate-x-[-5px]:hover {
+                transform: translateX(-3px);
+            }
+            .hover:translate-x-[5px]:hover {
+                transform: translateX(3px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-light font-song min-h-screen overflow-x-hidden bg-grid bg-noise">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center border border-primary/40">
+                    <span class="text-primary font-orbitron font-bold text-lg">H-83</span>
+                </div>
+                <span class="font-orbitron text-xl tracking-wider">PARALLEL REALMS</span>
+            </a>
+            
+            <!-- 桌面导航 -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#kordel" class="text-sm uppercase tracking-wider hover:text-primary transition-colors duration-300">主线K</a>
+                <a href="#trist" class="text-sm uppercase tracking-wider hover:text-primary transition-colors duration-300">主线崔</a>
+                <a href="#timeline" class="text-sm uppercase tracking-wider hover:text-primary transition-colors duration-300">时间线</a>
+                <a href="#destiny" class="text-sm uppercase tracking-wider hover:text-primary transition-colors duration-300">宿命交织</a>
+            </nav>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menuBtn" class="md:hidden text-2xl">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-dark/95 backdrop-blur-md fixed inset-0 z-50 transform translate-x-full transition-transform duration-300">
+            <div class="container mx-auto px-4 py-8 h-full flex flex-col">
+                <div class="flex justify-end">
+                    <button id="closeMenuBtn" class="text-2xl">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <nav class="flex flex-col space-y-8 mt-16 text-center">
+                    <a href="#kordel" class="text-xl uppercase tracking-wider hover:text-primary transition-colors duration-300">主线K</a>
+                    <a href="#trist" class="text-xl uppercase tracking-wider hover:text-primary transition-colors duration-300">主线崔</a>
+                    <a href="#timeline" class="text-xl uppercase tracking-wider hover:text-primary transition-colors duration-300">时间线</a>
+                    <a href="#destiny" class="text-xl uppercase tracking-wider hover:text-primary transition-colors duration-300">宿命交织</a>
+                </nav>
+                <div class="mt-auto">
+                    <p class="text-center text-gray-400 text-sm">H-83宇宙 | 平行宇宙观测站</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- 背景效果 -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-dark/90 via-dark/70 to-dark"></div>
+            <div class="absolute inset-0 bg-[url('https://imgtu.com/uploads/pcbjv0ca/be48a48ffb6246bc061d7a0d4a98bb8.jpg')] bg-cover bg-center opacity-25 animate-pulse-slow"></div>
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+            <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-secondary to-primary"></div>
+        </div>
+        
+        <!-- 内容 -->
+        <div class="container mx-auto px-4 z-10 text-center">
+            <div class="inline-block px-6 py-2 mb-4 border border-primary/30 rounded-full bg-primary/10 backdrop-blur-sm">
+                <span class="text-primary text-sm font-medium tracking-wider">平行宇宙 H-83</span>
+            </div>
+            <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-orbitron font-bold leading-tight mb-6 animate-glitch" data-text="INFINITE">INFINITE</h1>
+            <p class="text-[clamp(1rem,3vw,1.5rem)] text-gray-300 max-w-3xl mx-auto mb-12 text-balance">两个继承初代不同部分的灵魂碎片，在时间与空间的交错中，寻找属于他们的命运。一个关于科技与浪漫、控制与自由的故事。</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#kordel" class="px-8 py-3 bg-primary/15 border border-primary/40 rounded-lg hover:bg-primary/25 transition-all duration-300 text-primary font-medium tracking-wider flex items-center justify-center">
+                    <i class="fa fa-user mr-2"></i> 了解主线K
+                </a>
+                <a href="#trist" class="px-8 py-3 bg-transparent border border-light/25 rounded-lg hover:bg-light/10 transition-all duration-300 font-medium tracking-wider flex items-center justify-center">
+                    <i class="fa fa-user mr-2"></i> 了解主线崔
+                </a>
+                <a href="#timeline" class="px-8 py-3 bg-transparent border border-light/25 rounded-lg hover:bg-light/10 transition-all duration-300 font-medium tracking-wider flex items-center justify-center">
+                    <i class="fa fa-history mr-2"></i> 探索时间线
+                </a>
+            </div>
+        </div>
+        
+        <!-- 向下滚动指示 -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#kordel" class="text-light/50 hover:text-light transition-colors">
+                <i class="fa fa-angle-down text-3xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 主线K介绍 -->
+    <section id="kordel" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-dark to-transparent"></div>
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/8 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-secondary/8 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,3rem)] font-orbitron font-bold mb-4">主线K / K1</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-2xl mx-auto">Kordel Sanchez，拥有65%机械植入的天才科学家，为改变与崔斯特的命运，不惜穿越平行宇宙寻找破局之法。</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- 图片区域 -->
+                <div class="relative group">
+                    <div class="absolute inset-0 border border-primary/25 rounded-xl transform rotate-2 transition-transform duration-500 group-hover:rotate-0"></div>
+                    <div class="relative z-10 rounded-xl overflow-hidden glow">
+                        <img src="https://imgtu.com/uploads/pb90mse0/20250612005749.jpg" alt="主线K形象" class="w-full h-auto transform transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-4 -right-4 w-20 h-20 bg-primary/15 rounded-full blur-xl"></div>
+                </div>
+                
+                <!-- 信息区域 -->
+                <div>
+                    <div class="space-y-6">
+                        <div class="timeline-content timeline-content-primary">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-user-circle text-primary mr-3"></i> 基本信息
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">本名</span>
+                                    <span>Kordel Sanchez</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">身高</span>
+                                    <span>181cm</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">外貌特征</span>
+                                    <span>白发，右眼黑色眼罩，白色呆毛</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">机械植入</span>
+                                    <span>65%</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-content timeline-content-primary">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-brain text-secondary mr-3"></i> 性格特点
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>INTJ人格，智力超群，擅长布局与策略</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>举止优雅，处变不惊，理性且疯癫</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>可能在暗中过度关注崔斯特</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>受"湮灭"侵蚀导致人格扭曲，后期行事极端</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-content timeline-content-primary">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-lightbulb-o text-accent mr-3"></i> 关键发明
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>"视野"观察镜：观测平行宇宙与时间点</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>平行宇宙穿越机：探索不同宇宙</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>"涅槃I"计划：实现自身复活</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主线崔斯特介绍 -->
+    <section id="trist" class="py-24 relative overflow-hidden bg-gradient-to-b from-dark to-dark/90">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-accent/8 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 -top-20 w-80 h-80 bg-primary/8 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,3rem)] font-orbitron font-bold mb-4">主线崔斯特</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-accent to-primary mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-2xl mx-auto">戴眼镜的黑发设计师，继承初代崔的正向情感，在与主线K的命运交织中，逐渐发现平行宇宙的秘密。</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- 信息区域 -->
+                <div>
+                    <div class="space-y-6">
+                        <div class="timeline-content timeline-content-accent">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-user-circle text-accent mr-3"></i> 基本信息
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">本名</span>
+                                    <span>Trista</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">别名</span>
+                                    <span>主线崔</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">身高</span>
+                                    <span>168cm</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">外貌特征</span>
+                                    <span>戴眼镜的黑发女生，常穿绿外套</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">能力</span>
+                                    <span>继承初代崔的正向情感并可以分裂为崔斯塔和崔斯坦</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">MBTI</span>
+                                    <span>INFP</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-400">身份</span>
+                                    <span>设计师，后研究主线K的科技</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-content timeline-content-accent">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-heart text-primary mr-3"></i> 与主线K的关系
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>是主线k的生命之光</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>崔斯特起初将主线K视为弟弟，后发现……</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>崔斯特按主线K计划在极地复活了他</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>两人共同对抗"宿命"，最终实现he结局</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-content timeline-content-accent">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-quote-right text-secondary mr-3"></i> 经典语录
+                            </h3>
+                            <blockquote class="italic text-gray-300">
+                                "不是宿命，这里没有宿命。"
+                            </blockquote>
+                            <p class="text-gray-400 mt-2 text-sm">—— 这句话成为了主线K改变命运的信念</p>
+                        </div>
+                        
+                        <div class="timeline-content timeline-content-accent">
+                            <h3 class="text-xl font-orbitron font-semibold mb-3 flex items-center">
+                                <i class="fa fa-brain text-primary mr-3"></i> 性格特点
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>INFP人格，内心敏感，情感丰富</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>待人有距离感，习惯保持安全的社交空间</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>看乐子性格，喜欢观察周围发生的趣事</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>随地大小摆，但关键时刻又行动力很强</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-accent mt-1 mr-3"></i>
+                                    <span>在危机面前展现出超乎寻常的决断力</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 图片区域 -->
+                <div class="relative group">
+                    <div class="absolute inset-0 border border-accent/25 rounded-xl transform -rotate-2 transition-transform duration-500 group-hover:rotate-0"></div>
+                    <div class="relative z-10 rounded-xl overflow-hidden glow-blue"> <!-- 替换glow-pink为glow-blue -->
+                        <img src="https://imgtu.com/uploads/pc09qi4v/20250612011544.png" alt="主线崔斯特形象" class="w-full h-auto transform transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-accent/15 rounded-full blur-xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 时间线 -->
+    <section id="timeline" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-dark/90 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-dark to-transparent"></div>
+            <div class="absolute -right-20 top-1/2 transform -translate-y-1/2 w-80 h-80 bg-secondary/8 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 top-1/3 w-80 h-80 bg-primary/8 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,3rem)] font-orbitron font-bold mb-4">时间线</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-secondary to-accent mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-2xl mx-auto">主线K与主线崔斯特的命运交织，在时间与空间的维度中展开。每一个关键节点，都影响着他们最终的结局。</p>
+            </div>
+            
+            <div class="relative">
+                <!-- 时间线中心轴 -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-primary via-secondary to-accent"></div>
+                
+                <!-- 时间线项目 -->
+                <div class="space-y-12 relative">
+                    <!-- 项目1 -->
+                    <div class="md:flex md:items-center">
+                        <div class="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
+                            <div class="timeline-content timeline-content-primary">
+                                <h3 class="text-xl font-orbitron font-semibold mb-3 text-primary">主线K 19岁</h3>
+                                <p class="text-gray-300">遇到主线崔斯特，展开追求，两人关系亲密。研究出能观察平行宇宙和时间点的"视野"观察镜。</p>
+                            </div>
+                        </div>
+                        <div class="md:w-12 md:flex md:justify-center hidden">
+                            <div class="timeline-dot timeline-dot-primary"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+                    
+                    <!-- 项目2 -->
+                    <div class="md:flex md:items-center">
+                        <div class="md:w-1/2 md:pr-12 hidden md:block"></div>
+                        <div class="md:w-12 md:flex md:justify-center hidden">
+                            <div class="timeline-dot timeline-dot-secondary"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pl-12 mb-6 md:mb-0">
+                            <div class="timeline-content timeline-content-secondary">
+                                <h3 class="text-xl font-orbitron font-semibold mb-3 text-secondary">主线K 20岁</h3>
+                                <p class="text-gray-300">预览数万个宇宙的未来，发现与崔斯特的结局只有be。计算出唯一he的可能性——被主线崔收养。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目3 -->
+                    <div class="md:flex md:items-center">
+                        <div class="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
+                            <div class="timeline-content timeline-content-accent">
+                                <h3 class="text-xl font-orbitron font-semibold mb-3 text-accent">主线K 10岁</h3>
+                                <p class="text-gray-300">首次使用"视野"装置穿越回两个月前修正时间线，视力不可逆转地下降约100度。</p>
+                            </div>
+                        </div>
+                        <div class="md:w-12 md:flex md:justify-center hidden">
+                            <div class="timeline-dot timeline-dot-accent"></div>
+                        </div>
+                        <div class="md:w-1/2 md:pl-12 hidden md:block"></div>
+                    </div>
+                    
+                    <!-- 移动端时间线标记 -->
+                    <div class="md:hidden flex justify-center space-x-4 mb-8">
+                        <div class="timeline-dot timeline-dot-primary">
+                            <span class="text-xs font-bold">1</span>
+                        </div>
+                        <div class="timeline-dot timeline-dot-secondary">
+                            <span class="text-xs font-bold">2</span>
+                        </div>
+                        <div class="timeline-dot timeline-dot-accent">
+                            <span class="text-xs font-bold">3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 宿命交织部分 -->
+    <section id="destiny" class="py-24 relative overflow-hidden bg-gradient-to-b from-dark/90 to-dark">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-primary/8 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 -top-20 w-80 h-80 bg-accent/8 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,5vw,3rem)] font-orbitron font-bold mb-4">宿命交织</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-accent to-secondary mx-auto mb-6"></div>
+                <p class="text-gray-300 max-w-2xl mx-auto">在无数平行宇宙的可能性中，主线K与主线崔斯特如何突破命运的枷锁，实现属于他们的美好结局。</p>
+            </div>
+            
+            <div></div></div>
+
+    <!-- 新增的平行宇宙目录栏 -->
+    <section class="py-12 relative overflow-hidden bg-gradient-to-b from-dark to-dark/90">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-8">
+                <h2 class="text-[clamp(1.8rem,5vw,3rem)] font-orbitron font-bold mb-4">其他平行宇宙</h2>
+                <div class="w-20 h-1 bg-gradient-to-r from-accent to-primary mx-auto mb-6"></div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="text-gray-300 text-lg">H-387海盗与艺术史</span>
+                <span class="text-gray-300 text-lg">S-27反骨与诗人</span>
+                <span class="text-gray-300 text-lg">F-63非人与侦探</span>
+                <span class="text-gray-300 text-lg">Y-237模特与艺术家</span>
+            </div>
+        </div>
+    </section>
+</body></html>
